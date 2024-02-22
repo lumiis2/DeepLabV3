@@ -1,5 +1,8 @@
 #RESNET50 BACKBONE - (shallow features)
-
+# SOURCES
+# https://www.kaggle.com/code/gxkok21/resnet50-with-pytorch
+# https://towardsdatascience.com/the-annotated-resnet-50-a6c536034758
+# https://medium.com/@karuneshu21/how-to-resnet-in-pytorch-9acb01f36cf5
 
 
 from Bottleneck import Bottleneck
