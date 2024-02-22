@@ -6,7 +6,6 @@
 
 
 from Bottleneck import Bottleneck
-from Bottleneck import preprocess
 import torch
 import torch.nn  as nn
 
@@ -20,20 +19,21 @@ class Resnet50(nn.Module):
         self.dim_list = model_parameters[0]
         self.repeatition_list = model_parameters[1]
         self.expansion = model_parameters[2]
+        self.activation = nn.ReLU()
 
         self.first_block = nn.Sequential (
-            nn.Conv2d(in_channels=in_dim, out_channels=64, kernel_size=7, stride=2, padding=3, bias=False),
-            nn.BatchNorm2d(64),
-            nn.ReLU(),
+            nn.Conv3d(in_channels=in_dim, out_channels=64, kernel_size=(7, 7, 7), stride=(2, 2, 2), padding=(3, 3, 3), bias=False),
+            nn.BatchNorm3d(64),
+            self.activation,
         )
-        self.maxpool = nn.MaxPool2d(kernel_size=3,stride=2,padding=1)
+        self.maxpool = nn.MaxPool3d(kernel_size=(3, 3, 3),stride=(2, 2, 2),padding=(1, 1, 1))
         
         self.block1 = self._make_blocks( 64 , self.dim_list[0], self.repeatition_list[0], self.expansion, stride=1 )
         self.block2 = self._make_blocks( self.dim_list[0]*self.expansion , self.dim_list[1], self.repeatition_list[1], self.expansion, stride=2 )
         self.block3 = self._make_blocks( self.dim_list[1]*self.expansion , self.dim_list[2], self.repeatition_list[2], self.expansion, stride=2 )
         self.block4 = self._make_blocks( self.dim_list[2]*self.expansion , self.dim_list[3], self.repeatition_list[3], self.expansion, stride=2 )
 
-        self.average_pool = nn.AdaptiveAvgPool2d(1)
+        self.average_pool = nn.AdaptiveAvgPool3d(1)
         self.fc1 = nn.Linear( self.dim_list[3]*self.expansion , num_classes)
 
     def _make_blocks(self, in_dim, intermediate_dim, num_repeat, expansion, stride):
@@ -66,32 +66,26 @@ class Resnet50(nn.Module):
         return x
     
 def test_ResNet(params):
-    batch_size = 10
-    input_tensor = torch.randn(batch_size, 1, 128, 128, 128)
-    x = preprocess(input_tensor)
-    model = Resnet50(params, in_dim=128, num_classes=1000)
+    batch_size = 1
+    x = torch.randn(batch_size, 1, 128, 128, 128)
+    model = Resnet50(params, in_dim=1, num_classes=1000)
     output = model(x)
     print(output.shape)
     return model
 
-
-
-
-
 def test_Bottleneck():
     batch_size = 10
-    input_tensor = torch.randn(batch_size, 1, 128, 128, 128)
-    #x = preprocess(input_tensor)
-    x = torch.randn(1,64,112,112)
-    model = Bottleneck(64,64,4,2)
+    x = torch.randn(batch_size, 1, 128, 128, 128)
+    # x = torch.randn(1,64,112,112)
+    model = Bottleneck(1,64,4,2)
     print(model(x).shape)
     del model
 
 
 if __name__ == "__main__":
     model_parameters = ([64,128,256,512],[3,4,6,3],4)
-    model = test_ResNet(model_parameters)
-    test_Bottleneck()
+    model = test_ResNet(model_parameters) # esse ta rolando
+    #test_Bottleneck() #TODO  tem algm erro nesse bglh
 
 
 #ATROUS BACKBONE - (deeper features)
