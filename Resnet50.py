@@ -39,7 +39,6 @@ class Resnet50(nn.Module):
     def _make_blocks(self, in_dim, intermediate_dim, num_repeat, expansion, stride):
 
             layers = [] 
-
             layers.append(Bottleneck(in_dim, intermediate_dim, expansion, stride=stride))
             for num in range(1,num_repeat):
                 layers.append(Bottleneck(intermediate_dim*expansion,intermediate_dim,expansion, stride=1))
@@ -74,10 +73,9 @@ def test_ResNet(params):
     return model
 
 def test_Bottleneck():
-    batch_size = 10
-    x = torch.randn(batch_size, 1, 128, 128, 128)
-    # x = torch.randn(1,64,112,112)
-    model = Bottleneck(1,64,4,2)
+    batch_size = 1
+    x = torch.randn(batch_size, 64, 112, 112, 112)
+    model = Bottleneck(64,64,4,2)
     print(model(x).shape)
     del model
 
@@ -85,7 +83,7 @@ def test_Bottleneck():
 if __name__ == "__main__":
     model_parameters = ([64,128,256,512],[3,4,6,3],4)
     model = test_ResNet(model_parameters) # esse ta rolando
-    #test_Bottleneck() #TODO  tem algm erro nesse bglh
+    test_Bottleneck() #TODO  tem algm erro nesse bglh
 
 
 #ATROUS BACKBONE - (deeper features)
