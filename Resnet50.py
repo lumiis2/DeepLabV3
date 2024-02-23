@@ -6,6 +6,7 @@
 
 
 from Bottleneck import Bottleneck
+from Atrous import AtrousLayer3D
 import torch
 import torch.nn  as nn
 
@@ -20,6 +21,8 @@ class Resnet50(nn.Module):
         self.repeatition_list = model_parameters[1]
         self.expansion = model_parameters[2]
         self.activation = nn.ReLU()
+        self.atrous_layer = AtrousLayer3D(2048, num_classes, kernel_size=(2, 2, 2), dilation=(2, 2, 2))  # TODO: estranho esses tamanhos
+
 
         self.first_block = nn.Sequential (
             nn.Conv3d(in_channels=in_dim, out_channels=64, kernel_size=(7, 7, 7), stride=(2, 2, 2), padding=(3, 3, 3), bias=False),
@@ -36,12 +39,12 @@ class Resnet50(nn.Module):
         self.average_pool = nn.AdaptiveAvgPool3d(1)
         self.fc1 = nn.Linear( self.dim_list[3]*self.expansion , num_classes)
 
-    def _make_blocks(self, in_dim, intermediate_dim, num_repeat, expansion, stride):
+    def _make_blocks(self, in_dim, out_dim, num_repeat, expansion, stride):
 
             layers = [] 
-            layers.append(Bottleneck(in_dim, intermediate_dim, expansion, stride=stride))
+            layers.append(Bottleneck(in_dim, out_dim, expansion, stride=stride))
             for num in range(1,num_repeat):
-                layers.append(Bottleneck(intermediate_dim*expansion,intermediate_dim,expansion, stride=1))
+                layers.append(Bottleneck(out_dim*expansion,out_dim,expansion, stride=1))
 
             return nn.Sequential(*layers)
     
@@ -56,11 +59,14 @@ class Resnet50(nn.Module):
         x = self.block3(x)
         
         x = self.block4(x)
-        
-        x = self.average_pool(x)
+        print(x.shape)
+
+        """x = self.average_pool(x)
 
         x = torch.flatten(x, start_dim=1)
-        x = self.fc1(x)
+        x = self.fc1(x)"""
+
+        x = self.atrous_layer(x)
         
         return x
     
@@ -79,12 +85,21 @@ def test_Bottleneck():
     print(model(x).shape)
     del model
 
+def test_AtrousLayer3D():
+    batch_size = 1
+    atrous_layer = AtrousLayer3D(1, 10, (3, 3, 3), (2, 2, 2))
+    input_data = torch.randn(batch_size, 1, 32, 32, 32)
+    output_data = atrous_layer(input_data)
+
+    print("Input shape:", input_data.shape)
+    print("Output shape:", output_data.shape)
+
 
 if __name__ == "__main__":
     model_parameters = ([64,128,256,512],[3,4,6,3],4)
     model = test_ResNet(model_parameters) # esse ta rolando
     test_Bottleneck() #TODO  tem algm erro nesse bglh
-
+    test_AtrousLayer3D()
 
 #ATROUS BACKBONE - (deeper features)
 
