@@ -5,24 +5,32 @@
 # https://medium.com/@karuneshu21/how-to-resnet-in-pytorch-9acb01f36cf5
 
 
-from Bottleneck import Bottleneck
-from Atrous import AtrousLayer3D
+from DeepLabV3.BottleneckLayer import Bottleneck
+from DeepLabV3.AtrousLayer import AtrousLayer3D
 import torch
-import torch.nn  as nn
+import torch.nn as nn
 
 # resnetX = (Num of channels (de cada saida), repetition, Bottleneck_expansion)
 # model_parameters = ([64,128,256,512],[3,4,6,3],4)    
-
+# Resnet + Atrous Layer
 
 class Resnet50(nn.Module):
+    """
+        Creates the ResNet50 architecture based on the provided variant.
+        Args:
+            model_parameters (list) : eg. [[64,128,256,512],[3,4,6,3],4,True]
+            in_dim (int) : image channels (3)
+            num_classes (int) : output #classes 
+
+    """
     def __init__(self, model_parameters, in_dim, num_classes):
+        
         super(Resnet50, self).__init__()
         self.dim_list = model_parameters[0]
         self.repeatition_list = model_parameters[1]
         self.expansion = model_parameters[2]
         self.activation = nn.ReLU()
-        self.atrous_layer = AtrousLayer3D(2048, num_classes, kernel_size=(2, 2, 2), dilation=(2, 2, 2))  # TODO: estranho esses tamanhos
-
+        self.atrous_layer = AtrousLayer3D(2048, num_classes, kernel_size=(2, 2, 2), dilation=(2, 2, 2))  
 
         self.first_block = nn.Sequential (
             nn.Conv3d(in_channels=in_dim, out_channels=64, kernel_size=(7, 7, 7), stride=(2, 2, 2), padding=(3, 3, 3), bias=False),

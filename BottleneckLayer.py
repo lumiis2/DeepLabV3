@@ -2,6 +2,15 @@ import torch
 import torch.nn  as nn
 
 class Bottleneck(nn.Module):
+    """
+        Creates a Bottleneck with conv3D 1x1->3x3->1x1 layers.
+
+        Args:
+            in_dim (int) : input channels to the Bottleneck
+            out_dim (int) : number of channels to 3x3 conv 
+            expansion (int) : factor by which the input #channels are increased
+            stride (int) : stride applied in the 3x3 conv. 2 for first Bottleneck of the block and 1 for remaining
+    """
     def __init__(self, in_dim, out_dim, expansion, stride):
         super(Bottleneck,self).__init__()
         

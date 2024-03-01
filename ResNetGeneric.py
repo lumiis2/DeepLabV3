@@ -1,7 +1,26 @@
 import torch
 import torch.nn as nn
 
+"""
+Source: https://medium.com/@karuneshu21/how-to-resnet-in-pytorch-9acb01f36cf5
+The code has been edited and transformed to perform 3D convolutions and handle 3D data.
+"""
+
 class Bottleneck(nn.Module):
+    """
+        Constructs a Bottleneck block used in ResNet.
+
+        Parameters:
+            in_channels (int): Number of input channels.
+            intermediate_channels (int): Number of intermediate channels.
+            expansion (int): Expansion factor for the number of intermediate channels.
+            is_Bottleneck (bool): If True, uses the Bottleneck version of the block, otherwise, uses the standard version.
+            stride (int): Stride for convolution.
+
+        Returns:
+            nn.Module: Configured Bottleneck block.
+    """
+    
     def __init__(self, in_channels, intermediate_channels, expansion, is_Bottleneck, stride):
         super(Bottleneck, self).__init__()
         self.expansion = expansion
@@ -56,6 +75,17 @@ class Bottleneck(nn.Module):
 
 
 class ResNet(nn.Module):
+    """
+        Constructs a ResNet Neural Network.
+
+        Parameters:
+            resnet_variant (tuple): A tuple containing information about the ResNet architecture.
+            in_channels (int): Number of input channels.
+            num_classes (int): Number of classes in the output.
+
+        Returns:
+            nn.Module: Configured ResNet network.
+    """
     def __init__(self, resnet_variant, in_channels, num_classes):
         super(ResNet, self).__init__()
         self.channels_list = resnet_variant[0]
@@ -92,6 +122,20 @@ class ResNet(nn.Module):
         return x
 
     def _make_blocks(self, in_channels, intermediate_channels, num_repeat, expansion, is_Bottleneck, stride):
+        """
+        Creates blocks for building the ResNet network.
+
+        Parameters:
+            in_channels (int): Number of input channels.
+            intermediate_channels (int): Number of intermediate channels.
+            num_repeat (int): Number of repetitions of the block.
+            expansion (int): Expansion factor for the number of intermediate channels.
+            is_Bottleneck (bool): If True, uses the Bottleneck version of the block, otherwise, uses the standard version.
+            stride (int): Stride for convolution.
+
+        Returns:
+            nn.Sequential: Configured sequential blocks.
+        """
         layers = [] 
         layers.append(Bottleneck(in_channels, intermediate_channels, expansion, is_Bottleneck, stride=stride))
         for num in range(1, num_repeat):
