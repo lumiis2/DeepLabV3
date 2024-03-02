@@ -1,0 +1,9 @@
+Anotacoes
+#TODO: pegar as anotacoes do zap
+sources:
+Atrous Pyramid: https://arxiv.org/pdf/1606.00915v2.pdf
+DeepLabV3:  - https://medium.com/@itberrios6/deeplabv3-c0c8c93d25a4#:~:text=DeepLabv3%20is%20a%20Deep%20Neural,the%20total%20number%20of%20parameters
+            - https://www.imaios.com/en/resources/blog/deeplabv3-and-medical-imaging
+Resnet: - https://medium.com/@karuneshu21/how-to-resnet-in-pytorch-9acb01f36cf5
+        - https://www.kaggle.com/code/gxkok21/resnet50-with-pytorch
+        - https://towardsdatascience.com/the-annotated-resnet-50-a6c536034758
