@@ -5,8 +5,8 @@
 # https://medium.com/@karuneshu21/how-to-resnet-in-pytorch-9acb01f36cf5
 
 
-from DeepLabV3.BottleneckLayer import Bottleneck
-from DeepLabV3.AtrousLayer import AtrousLayer3D
+from BottleneckLayer import Bottleneck
+from AtrousLayer import AtrousLayer3D
 import torch
 import torch.nn as nn
 
@@ -30,7 +30,7 @@ class Resnet50(nn.Module):
         self.repeatition_list = model_parameters[1]
         self.expansion = model_parameters[2]
         self.activation = nn.ReLU()
-        self.atrous_layer = AtrousLayer3D(2048, num_classes, kernel_size=(2, 2, 2), dilation=(2, 2, 2))  
+        self.atrous_layer = AtrousLayer3D(2048, num_classes, kernel_size=(2, 2, 2), dilation=(2, 2, 2))  #rate = 2 no paper
 
         self.first_block = nn.Sequential (
             nn.Conv3d(in_channels=in_dim, out_channels=64, kernel_size=(7, 7, 7), stride=(2, 2, 2), padding=(3, 3, 3), bias=False),

@@ -1,0 +1,31 @@
+# Ignore Python bytecode files
+*.pyc
+__pycache__/
+
+# Ignore compiled Python files
+*.pyo
+*.pyd
+
+# Ignore IDE or editor-specific files
+.vscode/
+.idea/
+
+# Ignore generated files
+*.egg-info/
+dist/
+build/
+
+# Ignore model checkpoints and logs
+*.ckpt
+*.log
+
+# Ignore data files (if any)
+*.data
+*.csv
+*.xls
+*.xlsx
+
+# Ignore any other temporary or generated files
+*.bak
+*.swp
+*.tmp
